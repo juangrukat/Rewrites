@@ -61,6 +61,14 @@ class Database:
                 )
             ''')
             
+            # Create models table
+            self.cursor.execute('''
+                CREATE TABLE IF NOT EXISTS models (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    model_id TEXT UNIQUE NOT NULL
+                )
+            ''')
+            
             # Check if model column exists in settings table and add it if it doesn't
             self.check_and_add_model_column()
             
@@ -384,3 +392,34 @@ class Database:
         except sqlite3.Error as e:
             print(f"Error fetching first excerpt: {e}")
             return None
+    
+    def save_models(self, models):
+        """Save the list of models to the database"""
+        try:
+            # Clear existing models
+            self.cursor.execute("DELETE FROM models")
+            
+            # Insert new models
+            for model in models:
+                self.cursor.execute("INSERT OR IGNORE INTO models (model_id) VALUES (?)", (model,))
+            
+            self.conn.commit()
+            return True
+        except sqlite3.Error as e:
+            print(f"Error saving models: {e}")
+            return False
+    
+    def get_models(self):
+        """Get all saved models from the database"""
+        try:
+            self.cursor.execute("SELECT model_id FROM models ORDER BY model_id")
+            models = [row[0] for row in self.cursor.fetchall()]
+            
+            # If no models are found, return default models
+            if not models:
+                return ["gpt-3.5-turbo", "gpt-4", "gpt-4-turbo", "gpt-4o"]
+            
+            return models
+        except sqlite3.Error as e:
+            print(f"Error fetching models: {e}")
+            return ["gpt-3.5-turbo", "gpt-4", "gpt-4-turbo", "gpt-4o"]

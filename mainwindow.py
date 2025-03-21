@@ -120,7 +120,10 @@ class MainWindow(QMainWindow):
         from PySide6.QtWidgets import QComboBox
         self.model_combo = QComboBox(self.ui.Settings)
         self.model_combo.setGeometry(140, 150, 150, 32)
-        self.model_combo.addItems(["gpt-3.5-turbo", "gpt-4", "gpt-4-turbo", "gpt-4o"])
+        
+        # Load models from database
+        saved_models = self.db.get_models()
+        self.model_combo.addItems(saved_models)
         
         # Set current model from database
         current_model = self.db.get_model()
@@ -227,7 +230,19 @@ class MainWindow(QMainWindow):
         # Update model combo box
         self.model_combo.clear()
         if success:
-            self.model_combo.addItems(models)
+            # Filter out models with specific keywords
+            filtered_models = []
+            excluded_keywords = ["instruct", "preview", "audio", "realtime", "search", "transcribe", "tts"]
+            
+            for model in models:
+                # Check if any excluded keyword is in the model name
+                if not any(keyword in model.lower() for keyword in excluded_keywords):
+                    filtered_models.append(model)
+            
+            # Save filtered models to database
+            self.db.save_models(filtered_models)
+            
+            self.model_combo.addItems(filtered_models)
             
             # Set current model from database
             current_model = self.db.get_model()
@@ -235,10 +250,11 @@ class MainWindow(QMainWindow):
             if index >= 0:
                 self.model_combo.setCurrentIndex(index)
             
-            QMessageBox.information(self, "Success", "Models fetched successfully.")
+            QMessageBox.information(self, "Success", f"Models fetched and saved successfully. Filtered out {len(models) - len(filtered_models)} models.")
         else:
             # Add default models if fetch fails
-            self.model_combo.addItems(["gpt-3.5-turbo", "gpt-4", "gpt-4-turbo", "gpt-4o"])
+            default_models = ["gpt-3.5-turbo", "gpt-4", "gpt-4-turbo", "gpt-4o"]
+            self.model_combo.addItems(default_models)
             QMessageBox.warning(self, "Warning", models[0])
     
     def load_prompt_file(self):
