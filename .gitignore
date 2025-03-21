@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual Environment
+.qtcreator/*
+venv/
+.venv/
+Python_3_9_6venv/
+env/
+
+# Qt Creator
+*.user
+*.autosave
+
+# Database
+*.db
+*.db.backup
+*.sqlite3
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# System files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# PySide6 specific
+*.qmlc
+*.jsc
+*.qm
+*.ts
+
+# Build and dist
+build/
+dist/
+*.egg-info/

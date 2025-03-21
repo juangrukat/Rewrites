@@ -1,0 +1,4 @@
+PySide6
+requests
+openai>=1.0.0
+markdown
