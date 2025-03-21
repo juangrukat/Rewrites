@@ -1,7 +1,7 @@
 # AI Rewriting Assistant
 
 A desktop application built with PySide6 that helps you practice rewriting text excerpts and get AI-powered feedback on your rewrites.
-
+(https://github.com/juangrukat/Rewrites/blob/main/Rewrite.gif)
 ## Features
 
 - Import excerpts from CSV files
